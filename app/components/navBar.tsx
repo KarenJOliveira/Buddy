@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import logo from "../assets/logo.png";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 interface MenuProps {
   routes?: Route[];
@@ -22,17 +22,19 @@ const Menu = ({ routes }: MenuProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated";
 
   const onClose = () => {
     setIsMenuOpen(false);
   };
 
-  const handleLogout = async (e: MouseEvent) => {
+  const handleLogout = (e: MouseEvent) => {
     e.preventDefault();
-    /*startTransition(async () => {
-      await logoutAction();
-    });*/
+    onClose();
+    startTransition(() => {
+      signOut({ callbackUrl: "/inicio" });
+    });
   };
 
   useEffect(() => {
@@ -93,9 +95,8 @@ const Menu = ({ routes }: MenuProps) => {
           ))}
           <div className="mt-auto pt-4 border-t">
             {isAuthenticated ? (
-              <Link
-                href="/inicio"
-                className="block text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-md transition-colors duration-200 px-4 py-2"
+              <button
+                className="w-full text-left block text-gray-700 hover:bg-orange-50 hover:text-orange-600 rounded-md transition-colors duration-200 px-4 py-2"
                 onClick={handleLogout}
               >
                 {isPending ? (
@@ -104,12 +105,12 @@ const Menu = ({ routes }: MenuProps) => {
                     Aguarde...
                   </div>
                 ) : (
-                  <div className="flex items-center" onClick={() => signOut()}>
+                  <div className="flex items-center">
                     <LogOutIcon className="mr-2" />
                     Logout
                   </div>
                 )}
-              </Link>
+              </button>
             ) : (
               <Link
                 href="/login"

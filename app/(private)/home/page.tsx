@@ -8,7 +8,7 @@ export default async function HomePage() {
   }
   return (
     <div className="flex flex-col justify-center items-center min-h-screen">
-      <h1>Welcome to Buddy!</h1>
+      <h1>Welcome to Buddy {session.user?.name}!</h1>
     </div>
   );
 }
