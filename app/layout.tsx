@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <Provider>
         <body>
-          <NavBar routes={routes} />
+          <NavBar routes={routes} showRoutes={true} />
           {children}
           <div id="portal" />
         </body>

@@ -15,10 +15,11 @@ import logo from "../assets/logo.png";
 import { signOut, useSession } from "next-auth/react";
 
 interface MenuProps {
-  routes?: Route[];
+  routes: Route[];
+  showRoutes?: boolean;
 }
 
-const Menu = ({ routes }: MenuProps) => {
+const Menu = ({ routes, showRoutes = false }: MenuProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isPending, startTransition] = useTransition();
@@ -33,7 +34,7 @@ const Menu = ({ routes }: MenuProps) => {
     e.preventDefault();
     onClose();
     startTransition(() => {
-      signOut({ callbackUrl: "/inicio" });
+      signOut({ callbackUrl: "/" });
     });
   };
 
@@ -56,18 +57,29 @@ const Menu = ({ routes }: MenuProps) => {
   }, [isMenuOpen]);
 
   return (
-    <>
-      <div className="fixed top-0 left-0 w-full bg-orange-500 text-white p-2 z-50">
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="p-1 hover:text-gray-300"
-        >
-          <MenuIcon size={24} />
-        </button>
-      </div>
-      <div className="fixed top-0 left-16 z-50">
-        <Image src={logo} alt="Logo" width={96} height={32} />
-      </div>
+    <nav className="fixed top-0 left-0 w-full bg-orange-500 text-white p-2 z-50">
+      <ul className="flex items-center max-w-(--max-layout) mx-auto">
+        <li className="flex items-center gap-4 px-6 mr-auto">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="p-1 hover:text-gray-300"
+          >
+            <MenuIcon size={24} />
+          </button>
+          <Link href="/">
+            <Image src={logo} alt="Logo" width={96} height={32} />
+          </Link>
+        </li>
+
+        {showRoutes &&
+          routes.map((route, idx) => (
+            <li key={idx} className="hidden sm:flex relative px-6 group">
+              <Link href={route.href}>
+                <span>{route.label}</span>
+              </Link>
+            </li>
+          ))}
+      </ul>
       <div
         ref={menuRef}
         className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${
@@ -126,7 +138,7 @@ const Menu = ({ routes }: MenuProps) => {
           </div>
         </nav>
       </div>
-    </>
+    </nav>
   );
 };
 

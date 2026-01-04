@@ -14,7 +14,7 @@ const Button = ({
   const baseClasses =
     "px-4 py-2 gap-2 rounded focus:outline-none cursor-pointer transition-colors duration-200 flex items-center";
   const variantClasses = {
-    primary: `bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500`,
+    primary: `bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500`,
     secondary: `bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-500`,
     danger: `bg-red-500 text-white hover:bg-red-600 focus:ring-red-500`,
     edit: `bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200`,

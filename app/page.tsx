@@ -1,3 +1,9 @@
+import InitialPage from "./(public)/inicio/page";
+
 export default function Home() {
-  return <main></main>;
+  return (
+    <main>
+      <InitialPage />
+    </main>
+  );
 }

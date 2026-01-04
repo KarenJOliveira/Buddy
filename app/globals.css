@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --max-layout: 1280px;
+  /* color-scheme: light dark; */
 }
 
 @theme inline {
@@ -21,6 +23,7 @@
 
 body {
   background: oklch(98% 0.016 73.684);
+  /* background-color: light-dark(#fff,#071E22); */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
