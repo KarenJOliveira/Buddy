@@ -15,14 +15,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <Provider>
-        <body>
+    <html lang="pt-BR">
+      <body>
+        <Provider>
           <NavBar routes={routes} showRoutes={true} />
           {children}
           <div id="portal" />
-        </body>
-      </Provider>
+        </Provider>
+      </body>
     </html>
   );
 }
