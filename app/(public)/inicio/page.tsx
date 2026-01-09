@@ -61,6 +61,7 @@ export default function InitialPage() {
               </p>
               <div className="mt-4 flex justify-center lg:justify-start">
                 <Link href="/about">
+                  {/*this button seems messy testing the responsivity in browser but in tests with a real phone seems fine*/}
                   <Button>Saiba mais</Button>
                 </Link>
               </div>
