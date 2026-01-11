@@ -13,6 +13,30 @@ datasource db {
   provider = "postgresql"
 }
 
+// enums
+enum Gender {
+  MALE
+  FEMALE
+  UNKNOWN
+}
+
+enum Channel {
+  EMAIL
+  SITE
+}
+
+enum ReminderType {
+  VACCINE
+  MEDICINE
+  APPOINTMENT
+}
+
+enum MedicineType {
+  CONTINUOUS
+  CURATIVE
+}
+
+// NextAuth models
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -21,8 +45,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
   Authenticator Authenticator[]
+
+  animals Animal[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -41,10 +66,10 @@ model Account {
   id_token          String?
   session_state     String?
 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
 }
@@ -53,7 +78,8 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -67,7 +93,6 @@ model VerificationToken {
   @@id([identifier, token])
 }
 
-// Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
   userId               String
@@ -81,4 +106,126 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+// application models
+model Animal {
+  id   String @id @default(cuid())
+  name String
+
+  speciesId String
+  species   Species @relation(fields: [speciesId], references: [id])
+
+  gender Gender
+
+  birthDate  DateTime
+  weight     Float
+  color      String
+  castrated  Boolean
+  notes      String?
+  pictureUrl String?
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  vaccines     Vaccine[]
+  medicines    Medicine[]
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Species {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+
+  animals Animal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vaccine {
+  id             String    @id @default(cuid())
+  name           String
+  appliedAt      DateTime
+  expiresAt      DateTime?
+  veterinarian   String?
+  notes          String?
+  reminderActive Boolean   @default(false)
+
+  animalId String
+  animal   Animal @relation(fields: [animalId], references: [id], onDelete: Cascade)
+
+  reminders Reminder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medicine {
+  id             String       @id @default(cuid())
+  name           String
+  dosage         String
+  frequency      String
+  startAt        DateTime
+  endAt          DateTime?
+  type           MedicineType
+  notes          String?
+  reminderActive Boolean      @default(false)
+
+  animalId String
+  animal   Animal @relation(fields: [animalId], references: [id], onDelete: Cascade)
+
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+
+  reminders Reminder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id             String   @id @default(cuid())
+  dateTime       DateTime
+  reason         String
+  veterinarian   String?
+  diagnosis      String?
+  clinic         String?
+  notes          String?
+  reminderActive Boolean  @default(false)
+
+  animalId String
+  animal   Animal @relation(fields: [animalId], references: [id], onDelete: Cascade)
+
+  medicines Medicine[]
+  reminders Reminder[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reminder {
+  id        String       @id @default(cuid())
+  remindAt  DateTime
+  type      ReminderType
+  channel   Channel
+  message   String?
+  active    Boolean      @default(false)
+  recurring Boolean      @default(false)
+
+  vaccineId String?
+  vaccine   Vaccine? @relation(fields: [vaccineId], references: [id], onDelete: Cascade)
+
+  medicineId String?
+  medicine   Medicine? @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

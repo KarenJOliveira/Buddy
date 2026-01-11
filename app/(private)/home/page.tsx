@@ -1,14 +1,31 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
+import PageContainer from "@/app/components/pageContainer";
+import { redirect } from "next/dist/client/components/navigation";
+import { getServerSession } from "next-auth/next";
+import {
+  getAllSpecies,
+  getAnimalsByOwnerId,
+} from "@/app/serverActions/animalUtil";
+import AnimalCreator from "../../components/animalCreator";
+import AnimalsList from "@/app/components/animalsList";
+import { Animal, AnimalWithSpecies, Species } from "@/app/types/animal";
+import AnimalComponentsWrapper from "@/app/components/animalComponentsWrapper";
 
-export default async function HomePage() {
+const HomePage = async () => {
   const session = await getServerSession();
   if (!session) {
-    redirect("/inicio");
+    redirect("/login");
   }
+  const userId = session.user.id;
+  const userAnimals: AnimalWithSpecies[] = await getAnimalsByOwnerId(userId);
+  // get10PetsReminders(userAnimals);
+  const species: Species[] = await getAllSpecies();
+
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen">
-      <h1>Welcome to Buddy {session.user?.name}!</h1>
-    </div>
+    <PageContainer>
+      <AnimalComponentsWrapper userAnimals={userAnimals} species={species} />
+      {/* nextReminders */}
+    </PageContainer>
   );
-}
+};
+
+export default HomePage;
