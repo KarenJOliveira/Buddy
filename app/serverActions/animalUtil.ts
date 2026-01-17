@@ -105,6 +105,22 @@ const getAnimalsByOwnerId = async (ownerId: string) => {
   }
 };
 
+const getAnimalById = async (animalId: string) => {
+  try {
+    const animal = await prisma.animal.findUnique({
+      where: { id: animalId },
+      include: {
+        species: true,
+        vaccines: true,
+        medicines: true,
+        appointments: true,
+      },
+    });
 
+    return animal;
+  } catch (error) {
+    throw new Error("Erro ao buscar animal: " + error);
+  }
+};
 
-export { createSpecies, getAllSpecies, createAnimal, getAnimalsByOwnerId };
+export { createSpecies, getAllSpecies, createAnimal, getAnimalsByOwnerId, getAnimalById };

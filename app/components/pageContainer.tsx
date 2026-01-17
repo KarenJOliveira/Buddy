@@ -11,7 +11,6 @@ export default function PageContainer({
         {children}
         <div id="portal" />
       </section>
-      <Footer />
     </>
   );
 }
