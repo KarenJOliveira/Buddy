@@ -3,6 +3,7 @@ import "./globals.css";
 import NavBar from "./components/navBar";
 import { routes } from "./routesMapping";
 import Provider from "./context/provider";
+import Footer from "./components/footer";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <NavBar routes={routes} showRoutes={true} />
           {children}
           <div id="portal" />
+          <Footer />
         </Provider>
       </body>
     </html>
