@@ -41,3 +41,17 @@ export const createSpeciesSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().optional(),
 });
+
+export const createVaccineSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  appliedAt: z.coerce.date(),
+  expiresAt: z.coerce.date(),
+  veterinarian: z.string().optional().or(z.literal("")),
+  notes: z.string().max(1000, "Notas são muito longas").optional().or(z.literal("")),
+  reminderActive: z.boolean(),
+  animalId: z.string().min(1, "ID do animal é obrigatório"),
+});
+
+export const updateVaccineSchema = createVaccineSchema.extend({
+  id: z.string().min(1, "ID da vacina é obrigatório"),
+});

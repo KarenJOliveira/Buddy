@@ -5,6 +5,7 @@ import { getAnimalById, getAllSpecies } from "@/app/serverActions/animalUtil";
 import getGoogleUserById from "@/app/serverActions/userUtil";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
+import InfoVacinas from "@/app/components/animalProfile/infoVacinas";
 
 interface PageProps {
   params: {
@@ -28,11 +29,17 @@ export default async function AnimalPage({ params }: PageProps) {
   }
 
   const species: Species[] = await getAllSpecies();
-
   return (
     <PageContainer>
-      <div>Animal Page</div>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Perfil do Animal</h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Gerencie as informações e saúde do seu pet.
+        </p>
+      </div>
       <InfoGeral animal={animal} species={species} />
+
+      <InfoVacinas animal={animal} />
     </PageContainer>
   );
 }
