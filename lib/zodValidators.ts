@@ -55,3 +55,19 @@ export const createVaccineSchema = z.object({
 export const updateVaccineSchema = createVaccineSchema.extend({
   id: z.string().min(1, "ID da vacina é obrigatório"),
 });
+
+export const createReminderSchema = z.object({
+  remindAt: z.coerce.date(),
+  type: z.enum(["APPOINTMENT", "MEDICINE", "VACCINE"]),
+  channel: z.enum(["EMAIL", "SITE"]),
+  message: z.string().max(1000, "Mensagem é muito longa").optional().or(z.literal("")),
+  active: z.boolean(),
+  recurring: z.boolean(),
+  vaccineId: z.string().optional().or(z.literal("")),
+  medicineId: z.string().optional().or(z.literal("")),
+  appointmentId: z.string().optional().or(z.literal("")),
+});
+
+export const updateReminderSchema = createReminderSchema.extend({
+  id: z.string().min(1, "ID do lembrete é obrigatório"),
+});
