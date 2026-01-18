@@ -2,8 +2,8 @@
 
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Animal, Species } from "@/app/types/animal";
-import { createAnimal } from "@/app/serverActions/animalUtil";
-import { createAnimalFormData } from "@/app/types/animal";
+import { createAnimal, updateAnimal } from "@/app/serverActions/animalUtil";
+import { createAnimalFormData, updateAnimalFormData } from "@/app/types/animal";
 import Button from "@/app/components/button";
 import { Gender } from "@/lib/generated/prisma/enums";
 import SpeciesCreator from "./speciesCreator";
@@ -12,11 +12,15 @@ import { useRouter } from "next/navigation";
 interface AnimalCreatorProps {
   fetchedSpecies: Species[];
   onSuccess?: () => void;
+  editMode?: boolean;
+  prevAnimal: Animal;
 }
 
 export default function AnimalCreator({
   fetchedSpecies,
   onSuccess,
+  editMode = false,
+  prevAnimal,
 }: AnimalCreatorProps) {
   const router = useRouter();
 
@@ -37,7 +41,7 @@ export default function AnimalCreator({
     appointments: [],
   };
 
-  const [animal, setAnimal] = useState(emptyAnimal);
+  const [animal, setAnimal] = useState(prevAnimal);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [species, setSpecies] = useState<Species[]>(fetchedSpecies);
   const [showSpeciesCreator, setShowSpeciesCreator] = useState(false);
@@ -67,8 +71,12 @@ export default function AnimalCreator({
     setIsSubmitting(true);
 
     try {
-      await createAnimal(createAnimalFormData(animal));
-      setAnimal(emptyAnimal);
+      if (editMode) {
+        await updateAnimal(updateAnimalFormData(animal));
+      } else {
+        await createAnimal(createAnimalFormData(animal));
+        setAnimal(emptyAnimal);
+      }
       router.refresh();
       if (onSuccess) onSuccess();
     } catch (error) {

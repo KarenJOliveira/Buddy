@@ -25,6 +25,10 @@ export const createAnimalSchema = z.object({
   pictureUrl: z.url("Invalid URL").optional().or(z.literal("")),
 });
 
+export const updateAnimalSchema = createAnimalSchema.extend({
+  id: z.string().min(1, "ID do animal é obrigatório"),
+});
+
 
 // export const editAnimalSchema = createAnimalSchema.extend({
 //   id: z.string(),

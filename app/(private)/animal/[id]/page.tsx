@@ -1,5 +1,7 @@
+import InfoGeral from "@/app/components/animalProfile/infoGeral";
 import PageContainer from "@/app/components/pageContainer";
-import { getAnimalById } from "@/app/serverActions/animalUtil";
+import { Species } from "@/app/types/animal";
+import { getAnimalById, getAllSpecies } from "@/app/serverActions/animalUtil";
 import getGoogleUserById from "@/app/serverActions/userUtil";
 import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
@@ -20,16 +22,17 @@ export default async function AnimalPage({ params }: PageProps) {
   const user = await getGoogleUserById(session.user.id);
 
   const { id } = await params;
-  console.log("Animal ID:", id);
-  console.log("User ID:", user.id);
   const animal = await getAnimalById(id);
   if (!animal || animal.ownerId !== user.id) {
     redirect("/404");
   }
 
+  const species: Species[] = await getAllSpecies();
+
   return (
     <PageContainer>
       <div>Animal Page</div>
+      <InfoGeral animal={animal} species={species} />
     </PageContainer>
   );
 }

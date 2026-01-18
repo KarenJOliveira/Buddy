@@ -1,15 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { AnimalWithSpecies, Species } from "@/app/types/animal";
+import { AnimalWithSpecies, Animal, Species } from "@/app/types/animal";
 import AnimalsList from "@/app/components/animalsList";
 import AnimalCreator from "@/app/components/animalCreator";
 import { Plus, X } from "lucide-react";
+import { Gender } from "@/lib/generated/prisma/enums";
 
 interface AnimalComponentsWrapperProps {
   userAnimals: AnimalWithSpecies[];
   species: Species[];
 }
+
+const emptyAnimal: Animal = {
+  id: "",
+  name: "",
+  speciesId: "",
+  gender: Gender.UNKNOWN,
+  birthDate: new Date(),
+  weight: 0,
+  color: "",
+  castrated: false,
+  notes: "",
+  pictureUrl: "",
+  ownerId: "",
+  vaccines: [],
+  medicines: [],
+  appointments: [],
+};
 
 export default function AnimalComponentsWrapper({
   userAnimals,
@@ -50,6 +68,7 @@ export default function AnimalComponentsWrapper({
             <AnimalCreator
               fetchedSpecies={species}
               onSuccess={() => setIsCreatorOpen(false)}
+              prevAnimal={emptyAnimal}
             />
           </div>
         )}

@@ -1,9 +1,10 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { createSpeciesSchema,createAnimalSchema } from "@/lib/zodValidators";
+import { createSpeciesSchema,createAnimalSchema, updateAnimalSchema } from "@/lib/zodValidators";
 import { revalidateTag } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { ca } from "zod/locales";
 
 const createSpecies = async (formData: FormData) => {
   let parsedData;
@@ -123,4 +124,65 @@ const getAnimalById = async (animalId: string) => {
   }
 };
 
-export { createSpecies, getAllSpecies, createAnimal, getAnimalsByOwnerId, getAnimalById };
+const updateAnimal = async (formData: FormData) => {
+  let parsedData;
+
+  try{
+    const {id, name, speciesId, gender, birthDate, weight, color, castrated, notes, pictureUrl} = Object.fromEntries(
+      [
+        ["id", formData.get("id")],
+        ["name", formData.get("name")],
+        ["speciesId", formData.get("speciesId")],
+        ["gender", formData.get("gender")],
+        ["birthDate", formData.get("birthDate")],
+        ["weight", formData.get("weight")],
+        ["color", formData.get("color")],
+        ["castrated", formData.get("castrated") === "true"],
+        ["notes", formData.get("notes")],
+        ["pictureUrl", formData.get("pictureUrl")],
+      ]
+    );
+    parsedData = updateAnimalSchema.parse({
+      id,
+      name,
+      speciesId,
+      gender,
+      birthDate,
+      weight,
+      color,
+      castrated,
+      notes,
+      pictureUrl,
+    });
+  }catch(error){
+    throw new Error("Dados inválidos: " + error);
+  }
+
+  try{
+    const animal = await prisma.animal.update({
+      where: { id: parsedData.id },
+      data: {
+        name: parsedData.name,
+        speciesId: parsedData.speciesId,
+        gender: parsedData.gender,
+        birthDate: parsedData.birthDate,
+        weight: parsedData.weight,
+        color: parsedData.color,
+        castrated: parsedData.castrated,
+        notes: parsedData.notes || "",
+        pictureUrl: parsedData.pictureUrl || "",
+      },
+    });
+
+    revalidateTag("animals", "default");
+    return animal;
+  }
+  catch(error){
+    throw new Error("Erro ao atualizar registro no banco: " + error);
+  }
+};
+
+
+
+
+export { createSpecies, getAllSpecies, createAnimal, getAnimalsByOwnerId, getAnimalById, updateAnimal };
