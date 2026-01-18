@@ -7,6 +7,7 @@ import Button from "../button";
 import Modal from "../modal";
 import { useState } from "react";
 import AnimalCreator from "../animalCreator";
+import { Calendar, Cat, Dog, Edit2, Weight } from "lucide-react";
 
 interface InfoGeralProps {
   animal: AnimalWithSpecies;
@@ -23,32 +24,57 @@ export default function InfoGeral({ animal, species }: InfoGeralProps) {
       })
     : "Não informada";
   return (
-    <div>
-      <div>
-        <h2>Informações Gerais</h2>
-        {animal.pictureUrl ? (
-          <img
-            src={animal.pictureUrl}
-            alt={`Foto de ${animal.name}`}
-            className="w-16 h-16 rounded-full object-cover mr-3"
-          />
-        ) : (
-          <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-3 flex items-center justify-center text-gray-500">
-            ?
+    <div className="p-6">
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            {animal.pictureUrl ? (
+              <img
+                src={animal.pictureUrl}
+                alt={`Foto de ${animal.name}`}
+                className="w-16 h-16 rounded-full object-cover mr-3"
+              />
+            ) : (
+              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mr-3 flex items-center justify-center text-gray-500">
+                ?
+              </div>
+            )}
+            <div className="absolute -bottom-2 -right-2 bg-orange-500 text-white p-1.5 rounded-lg shadow-lg">
+              {animal.species?.name === "Cachorro" ? (
+                <Dog size={16} />
+              ) : (
+                <Cat size={16} />
+              )}
+            </div>
           </div>
-        )}
-        <p>Nome: {animal.name}</p>
-        <p>Espécie: {animal.species.name}</p>
-        <p>Data de Nascimento: {formattedBirthDate}</p>
-        <p>Peso: {animal.weight} kg</p>
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">{animal.name}</h2>
+            <p className="text-slate-500 flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full inline-block"></span>
+              {animal.species?.name}
+            </p>
+          </div>
+        </div>
+        <button className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400">
+          <Edit2 size={20} />
+        </button>
       </div>
-      <div>
-        <Button
-          className="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 px-3 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors duration-200"
-          onClick={() => setIsModalOpen(true)}
-        >
-          Editar
-        </Button>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-slate-50 p-4 rounded-2xl">
+          <div className="flex items-center gap-2 text-slate-500 mb-1">
+            <Calendar size={16} />
+            <span className="text-sm font-medium">Nascimento</span>
+          </div>
+          <p className="font-semibold text-slate-700">{formattedBirthDate}</p>
+        </div>
+        <div className="bg-slate-50 p-4 rounded-2xl">
+          <div className="flex items-center gap-2 text-slate-500 mb-1">
+            <Weight size={16} />
+            <span className="text-sm font-medium">Peso</span>
+          </div>
+          <p className="font-semibold text-slate-700">{animal.weight}</p>
+        </div>
       </div>
 
       {isModalOpen && (
