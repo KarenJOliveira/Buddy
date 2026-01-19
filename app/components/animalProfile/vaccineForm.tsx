@@ -158,7 +158,7 @@ export default function VaccineForm({
 
         <div className="pt-2">
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Salvando..." : "Salvar Animal"}
+            {isSubmitting ? "Salvando..." : "Salvar Vacina"}
           </Button>
         </div>
       </form>

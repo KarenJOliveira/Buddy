@@ -7,7 +7,7 @@ export default function PageContainer({
 }) {
   return (
     <>
-      <section className="flex-1 w-[80vw] max-w-(--max-layout) mt-10 mx-auto pt-24 text-black">
+      <section className="flex-1 w-[80vw] max-w-(--max-layout) mt-10 mx-auto pt-24 text-black min-h-[80vh]">
         {children}
         <div id="portal" />
       </section>

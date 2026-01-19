@@ -55,9 +55,12 @@ export default function InfoGeral({ animal, species }: InfoGeralProps) {
             </p>
           </div>
         </div>
-        <button className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400">
+        <Button
+          className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400"
+          onClick={() => setIsModalOpen(true)}
+        >
           <Edit2 size={20} />
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
